@@ -29,6 +29,8 @@ dependencies:
   cupertino_icons: ^0.1.3
   autocomplete_textfield: ^1.7.3
   json_annotation: ^3.1.1
+  ext_storage: any
+  permission_handler: ^4.4.0 
   
 
 dev_dependencies:  
