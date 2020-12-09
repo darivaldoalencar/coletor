@@ -1,6 +1,11 @@
 class Grupo {
+  String placatombamento;
+
   String idgrupo;
   String nome;
+
+  String idresp;
+  String nomeresp;
 
   Grupo({this.idgrupo, this.nome});
 

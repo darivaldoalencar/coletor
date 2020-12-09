@@ -6,7 +6,9 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'Grupo.dart';
-//import 'package:json_annotation/json_annotation.dart';
+import 'Inventario.dart';
+import 'package:ext_storage/ext_storage.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 void main() => runApp(MyApp());
 
@@ -37,9 +39,16 @@ class _MyHomePageState extends State<MyHomePage> {
   String msgErro = "";
   bool loading = true;
 
-  static List<Grupo> grupos = new List<Grupo>();
+  //static List<Grupo> grupos = new List<Grupo>();
+  static List<Inventario> inventariado = new List<Inventario>();
   AutoCompleteTextField searchTextFieldGrupo;
-  GlobalKey<AutoCompleteTextFieldState<Grupo>> keyGrupo = new GlobalKey();
+  AutoCompleteTextField searchTextFieldResp;
+  AutoCompleteTextField searchTextFieldLocal;
+  AutoCompleteTextField searchTextFieldConj;
+  GlobalKey<AutoCompleteTextFieldState<Inventario>> keyGrupo = new GlobalKey();
+  GlobalKey<AutoCompleteTextFieldState<Inventario>> keyResp = new GlobalKey();
+  GlobalKey<AutoCompleteTextFieldState<Inventario>> keyLocal = new GlobalKey();
+  GlobalKey<AutoCompleteTextFieldState<Inventario>> keyConj = new GlobalKey();
 
   final txtPlaca = TextEditingController();
   final txtConjunto = TextEditingController();
@@ -59,68 +68,87 @@ class _MyHomePageState extends State<MyHomePage> {
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
+  void mostraMensagem(String manipulou) async {
+    await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(manipulou),
+        elevation: 24.0,
+        content: Text(msgErro),
+        actions: <Widget>[
+          FlatButton(
+            child: Text("FECHAR"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
   bool manipularEstoque() {
-    setState(() {
-      if (this.txtPlaca.text.length <= 0) {
-        this.msgErro = "Informe a placa.";
-        return false;
-      } else if (this.txtConjunto.text.length <= 0) {
-        this.msgErro = "Informe o conjunto.";
-        return false;
-      } else if (this.txtLocalizacao.text.length <= 0) {
-        this.msgErro = "Informe a localização.";
-        return false;
-      } else if (this.txtGrupo.text.length <= 0) {
-        this.msgErro = "Informe o grupo.";
-        return false;
-      } else if (this.txtResponsavel.text.length <= 0) {
-        this.msgErro = "Informe o responsável.";
-        return false;
-      } else {
-        this.msgErro = "Item coletado.";
-        return true;
-      }
-    });
+    if (this.txtPlaca.text.length <= 0) {
+      this.msgErro = "Informe a placa.";
+      return false;
+    } else if (this.txtConjunto.text.length <= 0) {
+      this.msgErro = "Informe o conjunto.";
+      return false;
+    } else if (this.txtLocalizacao.text.length <= 0) {
+      this.msgErro = "Informe a localização.";
+      return false;
+    } else if (this.txtGrupo.text.length <= 0) {
+      this.msgErro = "Informe o grupo.";
+      return false;
+    } else if (this.txtResponsavel.text.length <= 0) {
+      this.msgErro = "Informe o responsável.";
+      return false;
+    } else {
+      this.msgErro = "Item coletado.";
+      return true;
+    }
   }
 
   Future<String> get _localPath async {
-    String path = "/storage/emulated/0/Download";
+    String path = await ExtStorage.getExternalStoragePublicDirectory(
+        ExtStorage.DIRECTORY_DOWNLOADS);
+
+    //String path = "/storage/emulated/0/Download";
 
     final directory = Directory(path);
     return directory.path;
   }
 
-  Future<File> get _localFile async {
+  // Future<File> get _localFile async {
+  //   final path = await _localPath;
+  //   return File('$path/bd.json');
+  // }
+
+  Future<File> get _localFileDados async {
     final path = await _localPath;
-    return File('$path/bd.json');
+    //return File('$path/grupos.json');
+    return File('$path/inventario.json');
   }
 
-  Future<File> get _localFileGrupos async {
-    final path = await _localPath;
-    return File('$path/grupos.json');
-  }
+  // Future<String> readJson() async {
+  //   try {
+  //     final file = await _localFile;
+  //     bool _fileExists = await file.exists();
 
-  Future<String> readJson() async {
-    try {
-      final file = await _localFile;
-      bool _fileExists = await file.exists();
+  //     if (_fileExists) {
+  //       String contents = await file.readAsString();
 
-      if (_fileExists) {
-        String contents = await file.readAsString();
+  //       //Map<String, dynamic> resp = jsonDecode(contents);
+  //       //print('nome: ${resp['name']}!');
+  //       //print('e-mail: ${resp['email']}.');
 
-        //Map<String, dynamic> resp = jsonDecode(contents);
-        //print('nome: ${resp['name']}!');
-        //print('e-mail: ${resp['email']}.');
-
-        return contents;
-      } else {
-        return "";
-      }
-    } catch (e) {
-      print('Descrição do Erro: $e');
-      return "ERRO";
-    }
-  }
+  //       return contents;
+  //     } else {
+  //       return "";
+  //     }
+  //   } catch (e) {
+  //     print('Descrição do Erro: $e');
+  //     return "ERRO";
+  //   }
+  // }
 
   void limparForm() {
     setState(() {
@@ -135,28 +163,52 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void getGrupos() async {
+  // void getGrupos() async {
+  //   try {
+  //     final file = await _localFileDados;
+  //     bool _fileExists = await file.exists();
+
+  //     if (_fileExists) {
+  //       String contents = await file.readAsString();
+  //       grupos = loadGrupos(contents);
+  //       setState(() {
+  //         loading = false;
+  //       });
+  //     } else {
+  //       print('Arquivo de grupos não foi localizado.');
+  //     }
+  //   } catch (e) {
+  //     print('Ocorreu um erro: $e');
+  //   }
+  // }
+
+  void getInventario() async {
     try {
-      final file = await _localFileGrupos;
+      final file = await _localFileDados;
       bool _fileExists = await file.exists();
 
       if (_fileExists) {
         String contents = await file.readAsString();
-        grupos = loadGrupos(contents);
+        inventariado = loadInventario(contents);
         setState(() {
           loading = false;
         });
       } else {
-        print('Arquivo de grupos não foi localizado.');
+        print('Arquivo de dados do inventario não foi localizado.');
       }
     } catch (e) {
       print('Ocorreu um erro: $e');
     }
   }
 
-  static List<Grupo> loadGrupos(String jsonString) {
+  // static List<Grupo> loadGrupos(String jsonString) {
+  //   final parsed = json.decode(jsonString).cast<Map<String, dynamic>>();
+  //   return parsed.map<Grupo>((json) => Grupo.fromJson(json)).toList();
+  // }
+
+  static List<Inventario> loadInventario(String jsonString) {
     final parsed = json.decode(jsonString).cast<Map<String, dynamic>>();
-    return parsed.map<Grupo>((json) => Grupo.fromJson(json)).toList();
+    return parsed.map<Inventario>((json) => Inventario.fromJson(json)).toList();
   }
 
   @override
@@ -171,32 +223,90 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    getGrupos();
+    //getGrupos();
+    getInventario();
     super.initState();
   }
 
-  Widget rowGrupo(Grupo grupo) {
+  Widget rowGrupo(Inventario inventario) {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(grupo.nome),
+          Text(inventario.grupo),
           SizedBox(
             width: 10.0,
           ),
           Text(
-            grupo.idgrupo,
+            inventario.idgrupo.toString(),
+          )
+        ]);
+  }
+
+  Widget rowResp(Inventario inventario) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(inventario.responsavel),
+          SizedBox(
+            width: 10.0,
+          ),
+          Text(
+            inventario.idresponsavel.toString(),
+          )
+        ]);
+  }
+
+  Widget rowLocal(Inventario inventario) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(inventario.localizacao),
+          SizedBox(
+            width: 10.0,
+          ),
+          Text(
+            inventario.idlocalizacao.toString(),
+          )
+        ]);
+  }
+
+  Widget rowConj(Inventario inventario) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(inventario.conjunto),
+          SizedBox(
+            width: 10.0,
+          ),
+          Text(
+            inventario.idconjunto.toString(),
           )
         ]);
   }
 
   void BuscaPatrimonio() {
     setState(() {
-      Grupo gp = new Grupo();
-      gp = grupos.firstWhere((g) => g.idgrupo.contains(this.idGrupo));
+      //Grupo gp = new Grupo();
+      Inventario di = new Inventario();
+      //gp = grupos
+      //    .firstWhere((g) => g.placatombamento.contains(this.txtPlaca.text));
+      di = inventariado
+          .firstWhere((i) => i.placa.toString().contains(this.txtPlaca.text));
+      this.idGrupo = di.idgrupo.toString();
+      this.idGrupoold = di.idgrupo.toString();
+      this.txtGrupo.text = di.grupo.toUpperCase();
 
-      this.idGrupo = gp.idgrupo;
-      this.idGrupoold = gp.idgrupo;
-      this.txtGrupo.text = gp.nome.toUpperCase();
+      this.idResponsavel = di.idresponsavel.toString();
+      this.idResponsavelold = di.idresponsavel.toString();
+      this.txtResponsavel.text = di.responsavel.toUpperCase();
+
+      this.idLocalizacao = di.idlocalizacao.toString();
+      this.idLocalizacaoold = di.idlocalizacao.toString();
+      this.txtLocalizacao.text = di.localizacao.toUpperCase();
+
+      this.idConjunto = di.idconjunto.toString();
+      this.idConjuntoOld = di.idconjunto.toString();
+      this.txtConjunto.text = di.conjunto.toUpperCase();
     });
   }
 
@@ -216,48 +326,138 @@ class _MyHomePageState extends State<MyHomePage> {
             }
           },
         ),
-        TextFormField(
-          controller: this.txtConjunto,
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(labelText: "Conjunto"),
-        ),
-        TextFormField(
-          controller: txtLocalizacao,
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(labelText: "Localização"),
-        ),
+
+        // TextFormField(
+        //   controller: this.txtConjunto,
+        //   keyboardType: TextInputType.text,
+        //   decoration: InputDecoration(labelText: "Conjunto"),
+        // ),
+
         loading
             ? CircularProgressIndicator()
-            : searchTextFieldGrupo = AutoCompleteTextField<Grupo>(
-                key: keyGrupo,
+            : searchTextFieldConj = AutoCompleteTextField<Inventario>(
+                key: keyConj,
                 clearOnSubmit: false,
-                suggestions: grupos,
+                suggestions: inventariado,
                 style: TextStyle(color: Colors.black, fontSize: 16.0),
-                decoration: InputDecoration(labelText: "Grupo"),
-                controller: this.txtGrupo,
+                decoration: InputDecoration(labelText: "Conjunto"),
+                controller: this.txtConjunto,
                 itemFilter: (item, query) {
-                  return item.nome
+                  return item.conjunto
                       .toUpperCase()
                       .startsWith(query.toUpperCase());
                 },
                 itemSorter: (a, b) {
-                  return a.nome.compareTo(b.nome);
+                  return a.conjunto.compareTo(b.conjunto);
                 },
                 itemSubmitted: (item) {
                   setState(() {
-                    searchTextFieldGrupo.textField.controller.text = item.nome;
-                    this.idGrupo = item.idgrupo;
+                    searchTextFieldConj.textField.controller.text =
+                        item.conjunto;
+                    this.idConjunto = item.idconjunto.toString();
+                  });
+                },
+                itemBuilder: (context, item) {
+                  return rowConj(item);
+                },
+              ),
+
+        // TextFormField(
+        //   controller: txtLocalizacao,
+        //   keyboardType: TextInputType.text,
+        //   decoration: InputDecoration(labelText: "Localização"),
+        // ),
+
+        loading
+            ? CircularProgressIndicator()
+            : searchTextFieldLocal = AutoCompleteTextField<Inventario>(
+                key: keyLocal,
+                clearOnSubmit: false,
+                suggestions: inventariado,
+                style: TextStyle(color: Colors.black, fontSize: 16.0),
+                decoration: InputDecoration(labelText: "Localização"),
+                controller: this.txtLocalizacao,
+                itemFilter: (item, query) {
+                  return item.localizacao
+                      .toUpperCase()
+                      .startsWith(query.toUpperCase());
+                },
+                itemSorter: (a, b) {
+                  return a.localizacao.compareTo(b.localizacao);
+                },
+                itemSubmitted: (item) {
+                  setState(() {
+                    searchTextFieldLocal.textField.controller.text =
+                        item.localizacao;
+                    this.idLocalizacao = item.idlocalizacao.toString();
+                  });
+                },
+                itemBuilder: (context, item) {
+                  return rowLocal(item);
+                },
+              ),
+
+        loading
+            ? CircularProgressIndicator()
+            : searchTextFieldGrupo = AutoCompleteTextField<Inventario>(
+                key: keyGrupo,
+                clearOnSubmit: false,
+                suggestions: inventariado,
+                style: TextStyle(color: Colors.black, fontSize: 16.0),
+                decoration: InputDecoration(labelText: "Grupo"),
+                controller: this.txtGrupo,
+                itemFilter: (item, query) {
+                  return item.grupo
+                      .toUpperCase()
+                      .startsWith(query.toUpperCase());
+                },
+                itemSorter: (a, b) {
+                  return a.grupo.compareTo(b.grupo);
+                },
+                itemSubmitted: (item) {
+                  setState(() {
+                    searchTextFieldGrupo.textField.controller.text = item.grupo;
+                    this.idGrupo = item.idgrupo.toString();
                   });
                 },
                 itemBuilder: (context, item) {
                   return rowGrupo(item);
                 },
               ),
-        TextFormField(
-          controller: this.txtResponsavel,
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(labelText: "Responsável"),
-        ),
+        // TextFormField(
+        //   controller: this.txtResponsavel,
+        //   keyboardType: TextInputType.text,
+        //   decoration: InputDecoration(labelText: "Responsável"),
+        // ),
+        loading
+            ? CircularProgressIndicator()
+            : searchTextFieldResp = AutoCompleteTextField<Inventario>(
+                key: keyResp,
+                clearOnSubmit: false,
+                suggestions: inventariado,
+                style: TextStyle(color: Colors.black, fontSize: 16.0),
+                decoration: InputDecoration(labelText: "Responsável"),
+                controller: this.txtResponsavel,
+                itemFilter: (item, query) {
+                  return item.responsavel
+                      .toUpperCase()
+                      .startsWith(query.toUpperCase());
+                },
+                itemSorter: (a, b) {
+                  return a.responsavel.compareTo(b.responsavel);
+                },
+                itemSubmitted: (item) {
+                  setState(() {
+                    searchTextFieldGrupo.textField.controller.text =
+                        item.responsavel;
+                    this.idResponsavel = item.idresponsavel.toString();
+                  });
+                },
+                itemBuilder: (context, item) {
+                  return rowResp(item);
+                },
+              ),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -265,20 +465,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 if (_formkey.currentState.validate()) {
                   bool manipulou = manipularEstoque();
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: Text(manipulou ? "Informação" : "Erro"),
-                      elevation: 24.0,
-                      content: Text(msgErro),
-                      actions: [
-                        FlatButton(
-                          child: Text("FECHAR"),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    ),
-                  );
+                  mostraMensagem(manipulou ? "Informação" : "Erro");
                 }
               },
               child: Text('Salvar'),
