@@ -5,10 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
-import 'Grupo.dart';
 import 'Inventario.dart';
 import 'package:ext_storage/ext_storage.dart';
-import 'package:json_annotation/json_annotation.dart';
+//import 'package:build_daemon/change_provider.dart';
+//import 'package:json_annotation/json_annotation.dart';
 
 void main() => runApp(MyApp());
 
@@ -39,7 +39,9 @@ class _MyHomePageState extends State<MyHomePage> {
   String msgErro = "";
   bool loading = true;
 
-  //static List<Grupo> grupos = new List<Grupo>();
+  String _jsonString;
+  File file;
+
   static List<Inventario> inventariado = new List<Inventario>();
   AutoCompleteTextField searchTextFieldGrupo;
   AutoCompleteTextField searchTextFieldResp;
@@ -56,15 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
   final txtResponsavel = TextEditingController();
   final txtGrupo = TextEditingController();
 
-  String idConjunto;
-  String idLocalizacao;
-  String idGrupo;
-  String idResponsavel;
+  int idConjunto;
+  int idLocalizacao;
+  int idGrupo;
+  int idResponsavel;
 
-  String idConjuntoOld;
-  String idLocalizacaoold;
-  String idGrupoold;
-  String idResponsavelold;
+  int idConjuntoOld;
+  int idLocalizacaoold;
+  int idGrupoold;
+  int idResponsavelold;
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -102,6 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
       this.msgErro = "Informe o responsável.";
       return false;
     } else {
+      _writeJson();
+
       this.msgErro = "Item coletado.";
       return true;
     }
@@ -111,44 +115,14 @@ class _MyHomePageState extends State<MyHomePage> {
     String path = await ExtStorage.getExternalStoragePublicDirectory(
         ExtStorage.DIRECTORY_DOWNLOADS);
 
-    //String path = "/storage/emulated/0/Download";
-
     final directory = Directory(path);
     return directory.path;
   }
 
-  // Future<File> get _localFile async {
-  //   final path = await _localPath;
-  //   return File('$path/bd.json');
-  // }
-
   Future<File> get _localFileDados async {
     final path = await _localPath;
-    //return File('$path/grupos.json');
     return File('$path/inventario.json');
   }
-
-  // Future<String> readJson() async {
-  //   try {
-  //     final file = await _localFile;
-  //     bool _fileExists = await file.exists();
-
-  //     if (_fileExists) {
-  //       String contents = await file.readAsString();
-
-  //       //Map<String, dynamic> resp = jsonDecode(contents);
-  //       //print('nome: ${resp['name']}!');
-  //       //print('e-mail: ${resp['email']}.');
-
-  //       return contents;
-  //     } else {
-  //       return "";
-  //     }
-  //   } catch (e) {
-  //     print('Descrição do Erro: $e');
-  //     return "ERRO";
-  //   }
-  // }
 
   void limparForm() {
     setState(() {
@@ -156,40 +130,23 @@ class _MyHomePageState extends State<MyHomePage> {
           this.txtLocalizacao.text = this.txtResponsavel.text = "";
 
       this.idConjunto =
-          this.idLocalizacao = this.idGrupo = this.idResponsavel = "";
+          this.idLocalizacao = this.idGrupo = this.idResponsavel = 0;
 
       this.idConjuntoOld =
-          this.idLocalizacaoold = this.idGrupoold = this.idResponsavelold = "";
+          this.idLocalizacaoold = this.idGrupoold = this.idResponsavelold = 0;
     });
   }
 
-  // void getGrupos() async {
-  //   try {
-  //     final file = await _localFileDados;
-  //     bool _fileExists = await file.exists();
-
-  //     if (_fileExists) {
-  //       String contents = await file.readAsString();
-  //       grupos = loadGrupos(contents);
-  //       setState(() {
-  //         loading = false;
-  //       });
-  //     } else {
-  //       print('Arquivo de grupos não foi localizado.');
-  //     }
-  //   } catch (e) {
-  //     print('Ocorreu um erro: $e');
-  //   }
-  // }
-
   void getInventario() async {
     try {
-      final file = await _localFileDados;
+      file = await _localFileDados;
+
       bool _fileExists = await file.exists();
 
       if (_fileExists) {
-        String contents = await file.readAsString();
-        inventariado = loadInventario(contents);
+        _jsonString = await file.readAsString();
+
+        inventariado = loadInventario(_jsonString);
         setState(() {
           loading = false;
         });
@@ -200,11 +157,6 @@ class _MyHomePageState extends State<MyHomePage> {
       print('Ocorreu um erro: $e');
     }
   }
-
-  // static List<Grupo> loadGrupos(String jsonString) {
-  //   final parsed = json.decode(jsonString).cast<Map<String, dynamic>>();
-  //   return parsed.map<Grupo>((json) => Grupo.fromJson(json)).toList();
-  // }
 
   static List<Inventario> loadInventario(String jsonString) {
     final parsed = json.decode(jsonString).cast<Map<String, dynamic>>();
@@ -223,7 +175,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    //getGrupos();
     getInventario();
     super.initState();
   }
@@ -286,28 +237,58 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void BuscaPatrimonio() {
     setState(() {
-      //Grupo gp = new Grupo();
       Inventario di = new Inventario();
-      //gp = grupos
-      //    .firstWhere((g) => g.placatombamento.contains(this.txtPlaca.text));
       di = inventariado
           .firstWhere((i) => i.placa.toString().contains(this.txtPlaca.text));
-      this.idGrupo = di.idgrupo.toString();
-      this.idGrupoold = di.idgrupo.toString();
+
+      this.idGrupo = di.idgrupo;
+      this.idGrupoold = di.idgrupo;
       this.txtGrupo.text = di.grupo.toUpperCase();
 
-      this.idResponsavel = di.idresponsavel.toString();
-      this.idResponsavelold = di.idresponsavel.toString();
+      this.idResponsavel = di.idresponsavel;
+      this.idResponsavelold = di.idresponsavel;
       this.txtResponsavel.text = di.responsavel.toUpperCase();
 
-      this.idLocalizacao = di.idlocalizacao.toString();
-      this.idLocalizacaoold = di.idlocalizacao.toString();
+      this.idLocalizacao = di.idlocalizacao;
+      this.idLocalizacaoold = di.idlocalizacao;
       this.txtLocalizacao.text = di.localizacao.toUpperCase();
 
-      this.idConjunto = di.idconjunto.toString();
-      this.idConjuntoOld = di.idconjunto.toString();
+      this.idConjunto = di.idconjunto;
+      this.idConjuntoOld = di.idconjunto;
       this.txtConjunto.text = di.conjunto.toUpperCase();
     });
+  }
+
+  void _writeJson() async {
+    try {
+      Inventario di = inventariado
+          .firstWhere((i) => i.placa.toString().contains(this.txtPlaca.text));
+
+      di.idconjunto = this.idConjunto;
+      di.idlocalizacao = this.idLocalizacao;
+      di.idresponsavel = this.idResponsavel;
+      di.idgrupo = this.idGrupo;
+      di.conjunto = this.txtConjunto.text;
+      di.localizacao = this.txtLocalizacao.text;
+      di.responsavel = this.txtResponsavel.text;
+      di.grupo = this.txtGrupo.text;
+      di.flgaltera = "S";
+
+      String strInventario = jsonEncode(di);
+      Map<String, dynamic> _newJson = jsonDecode(strInventario);
+
+      List<dynamic> _json = json.decode(_jsonString);
+      for (int i = 0; i <= _json.length - 1; i++) {
+        if (_json[i]["placa"] == di.placa) {
+          _json[i] = _newJson;
+          break;
+        }
+      }
+
+      file.writeAsStringSync(json.encode(_json));
+    } catch (e) {
+      print('Ocorreu um errro: $e');
+    }
   }
 
   @override
@@ -326,13 +307,6 @@ class _MyHomePageState extends State<MyHomePage> {
             }
           },
         ),
-
-        // TextFormField(
-        //   controller: this.txtConjunto,
-        //   keyboardType: TextInputType.text,
-        //   decoration: InputDecoration(labelText: "Conjunto"),
-        // ),
-
         loading
             ? CircularProgressIndicator()
             : searchTextFieldConj = AutoCompleteTextField<Inventario>(
@@ -354,20 +328,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {
                     searchTextFieldConj.textField.controller.text =
                         item.conjunto;
-                    this.idConjunto = item.idconjunto.toString();
+                    this.idConjunto = item.idconjunto;
                   });
                 },
                 itemBuilder: (context, item) {
                   return rowConj(item);
                 },
               ),
-
-        // TextFormField(
-        //   controller: txtLocalizacao,
-        //   keyboardType: TextInputType.text,
-        //   decoration: InputDecoration(labelText: "Localização"),
-        // ),
-
         loading
             ? CircularProgressIndicator()
             : searchTextFieldLocal = AutoCompleteTextField<Inventario>(
@@ -389,14 +356,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {
                     searchTextFieldLocal.textField.controller.text =
                         item.localizacao;
-                    this.idLocalizacao = item.idlocalizacao.toString();
+                    this.idLocalizacao = item.idlocalizacao;
                   });
                 },
                 itemBuilder: (context, item) {
                   return rowLocal(item);
                 },
               ),
-
         loading
             ? CircularProgressIndicator()
             : searchTextFieldGrupo = AutoCompleteTextField<Inventario>(
@@ -417,18 +383,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 itemSubmitted: (item) {
                   setState(() {
                     searchTextFieldGrupo.textField.controller.text = item.grupo;
-                    this.idGrupo = item.idgrupo.toString();
+                    this.idGrupo = item.idgrupo;
                   });
                 },
                 itemBuilder: (context, item) {
                   return rowGrupo(item);
                 },
               ),
-        // TextFormField(
-        //   controller: this.txtResponsavel,
-        //   keyboardType: TextInputType.text,
-        //   decoration: InputDecoration(labelText: "Responsável"),
-        // ),
         loading
             ? CircularProgressIndicator()
             : searchTextFieldResp = AutoCompleteTextField<Inventario>(
@@ -450,14 +411,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {
                     searchTextFieldGrupo.textField.controller.text =
                         item.responsavel;
-                    this.idResponsavel = item.idresponsavel.toString();
+                    this.idResponsavel = item.idresponsavel;
                   });
                 },
                 itemBuilder: (context, item) {
                   return rowResp(item);
                 },
               ),
-
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[

@@ -1,6 +1,6 @@
 class Inventario {
   int placa;
-  String centrocusto;
+  String codcentrocusto;
   String desbem;
   int idclassebem;
   String classe;
@@ -25,7 +25,7 @@ class Inventario {
 
   Inventario(
       {this.placa,
-      this.centrocusto,
+      this.codcentrocusto,
       this.desbem,
       this.idclassebem,
       this.classe,
@@ -43,10 +43,31 @@ class Inventario {
       this.responsavel,
       this.flgaltera});
 
+  Map toJson() => {
+        'placa': this.placa,
+        'codcentrocusto': this.codcentrocusto,
+        'desbem': this.desbem,
+        'idclassebem': this.idclassebem,
+        'classe': this.classe,
+        'idconjunto': this.idconjunto,
+        'idconjuntoold': this.idconjuntoold,
+        'conjunto': this.conjunto,
+        'idlocalizacao': this.idlocalizacao,
+        'idlocalizacaoold': this.idlocalizacaoold,
+        'localizacao': this.localizacao,
+        'idgrupo': this.idgrupo,
+        'idgrupoold': this.idgrupoold,
+        'grupo': this.grupo,
+        'idresponsavel': this.idresponsavel,
+        'idresponsavelold': this.idresponsavelold,
+        'responsavel': this.responsavel,
+        'flgaltera': this.flgaltera
+      };
+
   factory Inventario.fromJson(Map<String, dynamic> parsedJson) {
     return Inventario(
         placa: parsedJson['placa'] as int,
-        centrocusto: parsedJson['codcentrocusto'] as String,
+        codcentrocusto: parsedJson['codcentrocusto'] as String,
         desbem: parsedJson['desbem'] as String,
         idclassebem: parsedJson['idclassebem'] as int,
         classe: parsedJson['classe'] as String,
