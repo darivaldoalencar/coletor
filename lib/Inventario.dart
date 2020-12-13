@@ -1,6 +1,24 @@
 class Inventario {
+  int idinventariobens;
+  List<InventarioItens> items;
+
+  Inventario({this.idinventariobens, this.items});
+
+  Map toJson() =>
+      {'idinventariobens': this.idinventariobens, 'items': this.items};
+
+  factory Inventario.fromJson(Map<String, dynamic> parsedJson) {
+    var lista = parsedJson['items'] as List;
+    List<InventarioItens> items =
+        lista.map((p) => InventarioItens.fromJson(p)).toList();
+
+    return Inventario(
+        idinventariobens: parsedJson['idinventariobens'] as int, items: items);
+  }
+}
+
+class InventarioItens {
   int placa;
-  String codcentrocusto;
   String desbem;
   int idclassebem;
   String classe;
@@ -23,9 +41,10 @@ class Inventario {
 
   String flgaltera;
 
-  Inventario(
+  int iibflgsitfisica;
+
+  InventarioItens(
       {this.placa,
-      this.codcentrocusto,
       this.desbem,
       this.idclassebem,
       this.classe,
@@ -41,11 +60,11 @@ class Inventario {
       this.idresponsavel,
       this.idresponsavelold,
       this.responsavel,
-      this.flgaltera});
+      this.flgaltera,
+      this.iibflgsitfisica});
 
   Map toJson() => {
         'placa': this.placa,
-        'codcentrocusto': this.codcentrocusto,
         'desbem': this.desbem,
         'idclassebem': this.idclassebem,
         'classe': this.classe,
@@ -61,13 +80,13 @@ class Inventario {
         'idresponsavel': this.idresponsavel,
         'idresponsavelold': this.idresponsavelold,
         'responsavel': this.responsavel,
-        'flgaltera': this.flgaltera
+        'flgaltera': this.flgaltera,
+        'iibflgsitfisica': this.iibflgsitfisica
       };
 
-  factory Inventario.fromJson(Map<String, dynamic> parsedJson) {
-    return Inventario(
+  factory InventarioItens.fromJson(Map<String, dynamic> parsedJson) {
+    return InventarioItens(
         placa: parsedJson['placa'] as int,
-        codcentrocusto: parsedJson['codcentrocusto'] as String,
         desbem: parsedJson['desbem'] as String,
         idclassebem: parsedJson['idclassebem'] as int,
         classe: parsedJson['classe'] as String,
@@ -83,6 +102,7 @@ class Inventario {
         idresponsavel: parsedJson['idresponsavel'] as int,
         idresponsavelold: parsedJson['idresponsavelold'] as int,
         responsavel: parsedJson['responsavel'] as String,
-        flgaltera: parsedJson['flgaltera'] as String);
+        flgaltera: parsedJson['flgaltera'] as String,
+        iibflgsitfisica: parsedJson['iibflgsitfisica'] as int);
   }
 }

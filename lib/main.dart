@@ -5,10 +5,13 @@ import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+import 'package:flutter_app/Conjunto.dart';
+import 'package:flutter_app/Grupo.dart';
+import 'package:flutter_app/Localizacao.dart';
 import 'Inventario.dart';
 import 'package:ext_storage/ext_storage.dart';
-//import 'package:build_daemon/change_provider.dart';
-//import 'package:json_annotation/json_annotation.dart';
+import 'Linhas.dart';
+import 'Responsavel.dart';
 
 void main() => runApp(MyApp());
 
@@ -39,18 +42,66 @@ class _MyHomePageState extends State<MyHomePage> {
   String msgErro = "";
   bool loading = true;
 
+  var comboSituacao = ['Bom', 'Regular', 'Ruim', 'Inservível', 'Obsoleto'];
+
   String _jsonString;
   File file;
 
   static List<Inventario> inventariado = new List<Inventario>();
+  static List<Responsavel> listaResponsavel = new List<Responsavel>();
+  static List<Conjunto> listaConjunto = new List<Conjunto>();
+  static List<Localizacao> listaLocalizacao = new List<Localizacao>();
+  static List<Grupo> listaGrupo = new List<Grupo>();
+
+  void carregaListaIndividual() async {
+    await getInventario();
+
+    for (InventarioItens item in inventariado[0].items) {
+      Responsavel respIncluir =
+          new Responsavel(item.idresponsavel, item.responsavel, true);
+
+      Conjunto conjIncluir = new Conjunto(item.idconjunto, item.conjunto, true);
+
+      Localizacao locIncluir =
+          new Localizacao(item.idlocalizacao, item.localizacao, true);
+
+      Grupo grupoIncluir = new Grupo(item.idgrupo, item.grupo, true);
+
+      if (listaResponsavel.length > 0)
+        respIncluir.incluir = listaResponsavel
+            .where((e) => e.idresponsavel == item.idresponsavel)
+            .isEmpty;
+
+      if (listaConjunto.length > 0)
+        conjIncluir.incluir =
+            listaConjunto.where((e) => e.idconjunto == item.idconjunto).isEmpty;
+
+      if (listaLocalizacao.length > 0)
+        locIncluir.incluir = listaLocalizacao
+            .where((e) => e.idlocalizacao == item.idlocalizacao)
+            .isEmpty;
+
+      if (listaGrupo.length > 0)
+        grupoIncluir.incluir =
+            listaGrupo.where((e) => e.idgrupo == item.idgrupo).isEmpty;
+
+      if (respIncluir.incluir) listaResponsavel.add(respIncluir);
+      if (conjIncluir.incluir) listaConjunto.add(conjIncluir);
+      if (locIncluir.incluir) listaLocalizacao.add(locIncluir);
+      if (grupoIncluir.incluir) listaGrupo.add(grupoIncluir);
+    }
+  }
+
   AutoCompleteTextField searchTextFieldGrupo;
   AutoCompleteTextField searchTextFieldResp;
   AutoCompleteTextField searchTextFieldLocal;
   AutoCompleteTextField searchTextFieldConj;
-  GlobalKey<AutoCompleteTextFieldState<Inventario>> keyGrupo = new GlobalKey();
-  GlobalKey<AutoCompleteTextFieldState<Inventario>> keyResp = new GlobalKey();
-  GlobalKey<AutoCompleteTextFieldState<Inventario>> keyLocal = new GlobalKey();
-  GlobalKey<AutoCompleteTextFieldState<Inventario>> keyConj = new GlobalKey();
+  Linhas linhas = new Linhas();
+
+  GlobalKey<AutoCompleteTextFieldState<Grupo>> keyGrupo = new GlobalKey();
+  GlobalKey<AutoCompleteTextFieldState<Responsavel>> keyResp = new GlobalKey();
+  GlobalKey<AutoCompleteTextFieldState<Localizacao>> keyLocal = new GlobalKey();
+  GlobalKey<AutoCompleteTextFieldState<Conjunto>> keyConj = new GlobalKey();
 
   final txtPlaca = TextEditingController();
   final txtConjunto = TextEditingController();
@@ -67,6 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int idLocalizacaoold;
   int idGrupoold;
   int idResponsavelold;
+  int iibFlgsitfisica = 0;
+  int iibFlgsitfisicaOld = 0;
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -103,10 +156,11 @@ class _MyHomePageState extends State<MyHomePage> {
     } else if (this.txtResponsavel.text.length <= 0) {
       this.msgErro = "Informe o responsável.";
       return false;
+    } else if (this.iibFlgsitfisica < 0) {
+      this.msgErro = "Informe a situação.";
+      return false;
     } else {
-      _writeJson();
-
-      this.msgErro = "Item coletado.";
+      if (writeJson()) this.msgErro = "Item coletado.";
       return true;
     }
   }
@@ -129,11 +183,11 @@ class _MyHomePageState extends State<MyHomePage> {
       this.txtPlaca.text = this.txtConjunto.text = this.txtGrupo.text =
           this.txtLocalizacao.text = this.txtResponsavel.text = "";
 
-      this.idConjunto =
-          this.idLocalizacao = this.idGrupo = this.idResponsavel = 0;
+      this.idConjunto = this.idLocalizacao =
+          this.idGrupo = this.idResponsavel = this.iibFlgsitfisica = 0;
 
-      this.idConjuntoOld =
-          this.idLocalizacaoold = this.idGrupoold = this.idResponsavelold = 0;
+      this.idConjuntoOld = this.idLocalizacaoold =
+          this.idGrupoold = this.idResponsavelold = this.iibFlgsitfisicaOld = 0;
     });
   }
 
@@ -175,119 +229,86 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    getInventario();
+    carregaListaIndividual();
     super.initState();
   }
 
-  Widget rowGrupo(Inventario inventario) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(inventario.grupo),
-          SizedBox(
-            width: 10.0,
-          ),
-          Text(
-            inventario.idgrupo.toString(),
-          )
-        ]);
-  }
-
-  Widget rowResp(Inventario inventario) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(inventario.responsavel),
-          SizedBox(
-            width: 10.0,
-          ),
-          Text(
-            inventario.idresponsavel.toString(),
-          )
-        ]);
-  }
-
-  Widget rowLocal(Inventario inventario) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(inventario.localizacao),
-          SizedBox(
-            width: 10.0,
-          ),
-          Text(
-            inventario.idlocalizacao.toString(),
-          )
-        ]);
-  }
-
-  Widget rowConj(Inventario inventario) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(inventario.conjunto),
-          SizedBox(
-            width: 10.0,
-          ),
-          Text(
-            inventario.idconjunto.toString(),
-          )
-        ]);
-  }
-
-  void BuscaPatrimonio() {
+  void buscaPatrimonio() {
     setState(() {
-      Inventario di = new Inventario();
-      di = inventariado
-          .firstWhere((i) => i.placa.toString().contains(this.txtPlaca.text));
+      try {
+        InventarioItens di = new InventarioItens();
+        di = inventariado.first.items.firstWhere(
+            (i) => i.placa.toString().startsWith(this.txtPlaca.text));
 
-      this.idGrupo = di.idgrupo;
-      this.idGrupoold = di.idgrupo;
-      this.txtGrupo.text = di.grupo.toUpperCase();
+        if (di != null) {
+          this.idGrupo = di.idgrupo;
+          this.idGrupoold = di.idgrupo;
+          this.txtGrupo.text = di.grupo.toUpperCase();
 
-      this.idResponsavel = di.idresponsavel;
-      this.idResponsavelold = di.idresponsavel;
-      this.txtResponsavel.text = di.responsavel.toUpperCase();
+          this.idResponsavel = di.idresponsavel;
+          this.idResponsavelold = di.idresponsavel;
+          this.txtResponsavel.text = di.responsavel.toUpperCase();
 
-      this.idLocalizacao = di.idlocalizacao;
-      this.idLocalizacaoold = di.idlocalizacao;
-      this.txtLocalizacao.text = di.localizacao.toUpperCase();
+          this.idLocalizacao = di.idlocalizacao;
+          this.idLocalizacaoold = di.idlocalizacao;
+          this.txtLocalizacao.text = di.localizacao.toUpperCase();
 
-      this.idConjunto = di.idconjunto;
-      this.idConjuntoOld = di.idconjunto;
-      this.txtConjunto.text = di.conjunto.toUpperCase();
+          this.idConjunto = di.idconjunto;
+          this.idConjuntoOld = di.idconjunto;
+          this.txtConjunto.text = di.conjunto.toUpperCase();
+
+          this.iibFlgsitfisica = di.iibflgsitfisica;
+          this.iibFlgsitfisicaOld = di.iibflgsitfisica;
+        } else
+          limparForm();
+      } catch (e) {
+        print('Ocorreu um errro: $e');
+        limparForm();
+      }
     });
   }
 
-  void _writeJson() async {
+  bool writeJson() {
     try {
-      Inventario di = inventariado
+      InventarioItens di = inventariado.first.items
           .firstWhere((i) => i.placa.toString().contains(this.txtPlaca.text));
 
-      di.idconjunto = this.idConjunto;
-      di.idlocalizacao = this.idLocalizacao;
-      di.idresponsavel = this.idResponsavel;
-      di.idgrupo = this.idGrupo;
-      di.conjunto = this.txtConjunto.text;
-      di.localizacao = this.txtLocalizacao.text;
-      di.responsavel = this.txtResponsavel.text;
-      di.grupo = this.txtGrupo.text;
-      di.flgaltera = "S";
+      if (di.placa > 0) {
+        di.idconjunto = this.idConjunto;
+        di.idlocalizacao = this.idLocalizacao;
+        di.idresponsavel = this.idResponsavel;
+        di.idgrupo = this.idGrupo;
+        di.conjunto = this.txtConjunto.text;
+        di.localizacao = this.txtLocalizacao.text;
+        di.responsavel = this.txtResponsavel.text;
+        di.grupo = this.txtGrupo.text;
+        di.iibflgsitfisica = this.iibFlgsitfisica;
 
-      String strInventario = jsonEncode(di);
-      Map<String, dynamic> _newJson = jsonDecode(strInventario);
+        if ((di.idlocalizacao != this.idLocalizacaoold) ||
+            (di.idresponsavel != this.idResponsavelold) ||
+            (di.idgrupo != this.idGrupoold) ||
+            (di.idconjunto != this.idConjuntoOld) ||
+            (di.iibflgsitfisica != this.iibFlgsitfisicaOld))
+          di.flgaltera = "S";
+        else
+          di.flgaltera = "N";
 
-      List<dynamic> _json = json.decode(_jsonString);
-      for (int i = 0; i <= _json.length - 1; i++) {
-        if (_json[i]["placa"] == di.placa) {
-          _json[i] = _newJson;
-          break;
+        String strInventario = jsonEncode(di);
+        Map<String, dynamic> _newJson = jsonDecode(strInventario);
+        List<dynamic> _json = json.decode(_jsonString);
+
+        for (int i = 0; i <= _json[0]["items"].length - 1; i++) {
+          if (_json[0]["items"][i]["placa"] == di.placa) {
+            _json[0]["items"][i] = _newJson;
+            break;
+          }
         }
+        file.writeAsStringSync(json.encode(_json));
       }
-
-      file.writeAsStringSync(json.encode(_json));
+      return true;
     } catch (e) {
       print('Ocorreu um errro: $e');
+      return false;
     }
   }
 
@@ -300,7 +321,7 @@ class _MyHomePageState extends State<MyHomePage> {
           controller: this.txtPlaca,
           keyboardType: TextInputType.text,
           decoration: InputDecoration(labelText: "Placa de tombamento"),
-          onChanged: (value) => BuscaPatrimonio(),
+          onChanged: (value) => buscaPatrimonio(),
           validator: (value) {
             if (value.isEmpty) {
               return "Informe o código de barras";
@@ -309,10 +330,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         loading
             ? CircularProgressIndicator()
-            : searchTextFieldConj = AutoCompleteTextField<Inventario>(
+            : searchTextFieldConj = AutoCompleteTextField<Conjunto>(
                 key: keyConj,
                 clearOnSubmit: false,
-                suggestions: inventariado,
+                suggestions: listaConjunto,
                 style: TextStyle(color: Colors.black, fontSize: 16.0),
                 decoration: InputDecoration(labelText: "Conjunto"),
                 controller: this.txtConjunto,
@@ -332,15 +353,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
                 itemBuilder: (context, item) {
-                  return rowConj(item);
+                  return linhas.rowConj(item);
                 },
               ),
         loading
             ? CircularProgressIndicator()
-            : searchTextFieldLocal = AutoCompleteTextField<Inventario>(
+            : searchTextFieldLocal = AutoCompleteTextField<Localizacao>(
                 key: keyLocal,
                 clearOnSubmit: false,
-                suggestions: inventariado,
+                suggestions: listaLocalizacao,
                 style: TextStyle(color: Colors.black, fontSize: 16.0),
                 decoration: InputDecoration(labelText: "Localização"),
                 controller: this.txtLocalizacao,
@@ -360,15 +381,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
                 itemBuilder: (context, item) {
-                  return rowLocal(item);
+                  return linhas.rowLocal(item);
                 },
               ),
         loading
             ? CircularProgressIndicator()
-            : searchTextFieldGrupo = AutoCompleteTextField<Inventario>(
+            : searchTextFieldGrupo = AutoCompleteTextField<Grupo>(
                 key: keyGrupo,
                 clearOnSubmit: false,
-                suggestions: inventariado,
+                suggestions: listaGrupo,
                 style: TextStyle(color: Colors.black, fontSize: 16.0),
                 decoration: InputDecoration(labelText: "Grupo"),
                 controller: this.txtGrupo,
@@ -387,15 +408,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
                 itemBuilder: (context, item) {
-                  return rowGrupo(item);
+                  return linhas.rowGrupo(item);
                 },
               ),
         loading
             ? CircularProgressIndicator()
-            : searchTextFieldResp = AutoCompleteTextField<Inventario>(
+            : searchTextFieldResp = AutoCompleteTextField<Responsavel>(
                 key: keyResp,
                 clearOnSubmit: false,
-                suggestions: inventariado,
+                suggestions: listaResponsavel,
                 style: TextStyle(color: Colors.black, fontSize: 16.0),
                 decoration: InputDecoration(labelText: "Responsável"),
                 controller: this.txtResponsavel,
@@ -409,15 +430,32 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 itemSubmitted: (item) {
                   setState(() {
-                    searchTextFieldGrupo.textField.controller.text =
+                    searchTextFieldResp.textField.controller.text =
                         item.responsavel;
                     this.idResponsavel = item.idresponsavel;
                   });
                 },
                 itemBuilder: (context, item) {
-                  return rowResp(item);
+                  return linhas.rowResp(item);
                 },
               ),
+        DropdownButtonFormField<String>(
+          icon: Icon(Icons.arrow_downward),
+          decoration: InputDecoration(labelText: "Situação"),
+          value: comboSituacao[this.iibFlgsitfisica],
+          style: TextStyle(color: Colors.black, fontSize: 16.0),
+          items: comboSituacao.map((String dropDownStringItem) {
+            return DropdownMenuItem<String>(
+              value: dropDownStringItem,
+              child: Text(dropDownStringItem),
+            );
+          }).toList(),
+          onChanged: (op) {
+            setState(() {
+              this.iibFlgsitfisica = comboSituacao.indexOf(op);
+            });
+          },
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
