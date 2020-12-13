@@ -3,8 +3,7 @@
 		"idinventariobens": 1000,		
 		"items": [
 			{
-				"placa": 7965,
-				"codcentrocusto": "435       ",
+				"placa": 7965,				
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -24,8 +23,7 @@
 				"iibflgsitfisica": 0			
 			},
 			{
-				"placa": 7966,
-				"codcentrocusto": "435       ",
+				"placa": 7966,				
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -45,8 +43,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 7979,
-				"codcentrocusto": "435       ",
+				"placa": 7979,				
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -66,8 +63,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 7984,
-				"codcentrocusto": "435       ",
+				"placa": 7984,				
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -87,8 +83,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 8007,
-				"codcentrocusto": "435       ",
+				"placa": 8007,				
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -108,8 +103,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 8010,
-				"codcentrocusto": "435       ",
+				"placa": 8010,				
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -129,8 +123,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 8024,
-				"codcentrocusto": "435       ",
+				"placa": 8024,				
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -150,8 +143,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 8031,
-				"codcentrocusto": "435       ",
+				"placa": 8031,				
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -171,8 +163,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9675,
-				"codcentrocusto": "436       ",
+				"placa": 9675,				
 				"desbem": "RACK DE PAREDE ECOPLEX COM PORTA DE ACRILICO - PRETO",
 				"idclassebem": 632,
 				"classe": "MÓVEIS",
@@ -192,8 +183,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9695,
-				"codcentrocusto": "436       ",
+				"placa": 9695,				
 				"desbem": "MÓDULO BÁSICO A-270 PLUS",
 				"idclassebem": 629,
 				"classe": "PERIFÉRICOS",
@@ -213,8 +203,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9743,
-				"codcentrocusto": "436       ",
+				"placa": 9743,				
 				"desbem": "WS- C2960X-24PS BR-CATALYST 2960-X 24 GIGe POE 370W,4X 1G SFP,LAN BASE",
 				"idclassebem": 629,
 				"classe": "PERIFÉRICOS",
@@ -234,8 +223,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9756,
-				"codcentrocusto": "436       ",
+				"placa": 9756,				
 				"desbem": "SAMSUNG MONITOR LED PROFISSIONAL 40\" 1920X1080 PIXELS D-SUB/HDMI BORDA FINA SMARTSIGNAGE - LH40DCEPLGV/ZD",
 				"idclassebem": 627,
 				"classe": "MONITORES",
@@ -255,8 +243,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9757,
-				"codcentrocusto": "436       ",
+				"placa": 9757,				
 				"desbem": "SAMSUNG MONITOR LED PROFISSIONAL 40\" 1920X1080 PIXELS D-SUB/HDMI BORDA FINA SMARTSIGNAGE - LH40DCEPLGV/ZD",
 				"idclassebem": 627,
 				"classe": "MONITORES",
@@ -276,8 +263,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9758,
-				"codcentrocusto": "436       ",
+				"placa": 9758,				
 				"desbem": "SAMSUNG MONITOR LED PROFISSIONAL 40\" 1920X1080 PIXELS D-SUB/HDMI BORDA FINA SMARTSIGNAGE - LH40DCEPLGV/ZD",
 				"idclassebem": 627,
 				"classe": "MONITORES",
@@ -297,8 +283,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9759,
-				"codcentrocusto": "436       ",
+				"placa": 9759,				
 				"desbem": "SAMSUNG MONITOR LED PROFISSIONAL 40\" 1920X1080 PIXELS D-SUB/HDMI BORDA FINA SMARTSIGNAGE - LH40DCEPLGV/ZD",
 				"idclassebem": 627,
 				"classe": "MONITORES",
@@ -318,8 +303,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9837,
-				"codcentrocusto": "436       ",
+				"placa": 9837,				
 				"desbem": "C.DOME IP 1MP DEN POE/WDR LM 3/10",
 				"idclassebem": 643,
 				"classe": "SISTEMA DE SEGURANÇA",
@@ -339,8 +323,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9838,
-				"codcentrocusto": "436       ",
+				"placa": 9838,				
 				"desbem": "C.DOME IP 1MP DEN POE/WDR LM 3/10",
 				"idclassebem": 643,
 				"classe": "SISTEMA DE SEGURANÇA",
@@ -360,8 +343,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9839,
-				"codcentrocusto": "436       ",
+				"placa": 9839,				
 				"desbem": "JOYSTICK COMANDO KBD 3D",
 				"idclassebem": 643,
 				"classe": "SISTEMA DE SEGURANÇA",
@@ -381,8 +363,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9840,
-				"codcentrocusto": "436       ",
+				"placa": 9840,				
 				"desbem": "JOYSTICK COMANDO KBD 3D",
 				"idclassebem": 643,
 				"classe": "SISTEMA DE SEGURANÇA",
