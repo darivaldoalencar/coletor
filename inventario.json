@@ -1,9 +1,49 @@
 [
 	{
-		"idinventariobens": 1000,		
+		"idinventariobens": 1000,
+		"grupos": [
+			{
+				"idgrupo": 1,
+				"grupo": "TESTE 1"
+			},
+			{
+				"idgrupo": 2,
+				"grupo": "TESTE 2"
+			}
+		],
+		"localizacoes": [
+			{
+				"idlocalizacao": 1,
+				"localizacao": "TESTE 1"
+			},
+			{
+				"idlocalizacao": 2,
+				"localizacao": "TESTE 2"
+			}
+		],
+		"conjuntos": [
+			{
+				"idconjunto": 1,
+				"conjunto": "TESTE 1"
+			},
+			{
+				"idconjunto": 2,
+				"conjunto": "TESTE 2"
+			}
+		],
+		"responsaveis": [
+			{
+				"idresponsavel": 1,
+				"responsavel": "TESTE 1"
+			},
+			{
+				"idresponsavel": 2,
+				"responsavel": "TESTE 2"
+			}
+		],
 		"items": [
 			{
-				"placa": 7965,				
+				"placa": 7965,
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -20,10 +60,10 @@
 				"idresponsavelold": 56181,
 				"responsavel": "CLAUDIA PEREIRA DOS REIS",
 				"flgaltera": "N",
-				"iibflgsitfisica": 0			
+				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 7966,				
+				"placa": 7966,
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -43,7 +83,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 7979,				
+				"placa": 7979,
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -63,7 +103,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 7984,				
+				"placa": 7984,
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -83,7 +123,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 8007,				
+				"placa": 8007,
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -103,7 +143,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 8010,				
+				"placa": 8010,
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -123,7 +163,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 8024,				
+				"placa": 8024,
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -143,7 +183,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 8031,				
+				"placa": 8031,
 				"desbem": "TELEVISÃO",
 				"idclassebem": 636,
 				"classe": "ELETRODOMÉSTICOS",
@@ -163,7 +203,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9675,				
+				"placa": 9675,
 				"desbem": "RACK DE PAREDE ECOPLEX COM PORTA DE ACRILICO - PRETO",
 				"idclassebem": 632,
 				"classe": "MÓVEIS",
@@ -183,7 +223,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9695,				
+				"placa": 9695,
 				"desbem": "MÓDULO BÁSICO A-270 PLUS",
 				"idclassebem": 629,
 				"classe": "PERIFÉRICOS",
@@ -203,7 +243,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9743,				
+				"placa": 9743,
 				"desbem": "WS- C2960X-24PS BR-CATALYST 2960-X 24 GIGe POE 370W,4X 1G SFP,LAN BASE",
 				"idclassebem": 629,
 				"classe": "PERIFÉRICOS",
@@ -223,7 +263,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9756,				
+				"placa": 9756,
 				"desbem": "SAMSUNG MONITOR LED PROFISSIONAL 40\" 1920X1080 PIXELS D-SUB/HDMI BORDA FINA SMARTSIGNAGE - LH40DCEPLGV/ZD",
 				"idclassebem": 627,
 				"classe": "MONITORES",
@@ -243,7 +283,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9757,				
+				"placa": 9757,
 				"desbem": "SAMSUNG MONITOR LED PROFISSIONAL 40\" 1920X1080 PIXELS D-SUB/HDMI BORDA FINA SMARTSIGNAGE - LH40DCEPLGV/ZD",
 				"idclassebem": 627,
 				"classe": "MONITORES",
@@ -263,7 +303,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9758,				
+				"placa": 9758,
 				"desbem": "SAMSUNG MONITOR LED PROFISSIONAL 40\" 1920X1080 PIXELS D-SUB/HDMI BORDA FINA SMARTSIGNAGE - LH40DCEPLGV/ZD",
 				"idclassebem": 627,
 				"classe": "MONITORES",
@@ -283,7 +323,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9759,				
+				"placa": 9759,
 				"desbem": "SAMSUNG MONITOR LED PROFISSIONAL 40\" 1920X1080 PIXELS D-SUB/HDMI BORDA FINA SMARTSIGNAGE - LH40DCEPLGV/ZD",
 				"idclassebem": 627,
 				"classe": "MONITORES",
@@ -303,7 +343,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9837,				
+				"placa": 9837,
 				"desbem": "C.DOME IP 1MP DEN POE/WDR LM 3/10",
 				"idclassebem": 643,
 				"classe": "SISTEMA DE SEGURANÇA",
@@ -323,7 +363,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9838,				
+				"placa": 9838,
 				"desbem": "C.DOME IP 1MP DEN POE/WDR LM 3/10",
 				"idclassebem": 643,
 				"classe": "SISTEMA DE SEGURANÇA",
@@ -343,7 +383,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9839,				
+				"placa": 9839,
 				"desbem": "JOYSTICK COMANDO KBD 3D",
 				"idclassebem": 643,
 				"classe": "SISTEMA DE SEGURANÇA",
@@ -363,7 +403,7 @@
 				"iibflgsitfisica": 0
 			},
 			{
-				"placa": 9840,				
+				"placa": 9840,
 				"desbem": "JOYSTICK COMANDO KBD 3D",
 				"idclassebem": 643,
 				"classe": "SISTEMA DE SEGURANÇA",
