@@ -4,41 +4,41 @@
 		"grupos": [
 			{
 				"idgrupo": 1,
-				"grupo": "TESTE 1"
+				"grupo": "GRUPO 1"
 			},
 			{
 				"idgrupo": 2,
-				"grupo": "TESTE 2"
+				"grupo": "GRUPO 2"
 			}
 		],
 		"localizacoes": [
 			{
 				"idlocalizacao": 1,
-				"localizacao": "TESTE 1"
+				"localizacao": "LOCAL 1"
 			},
 			{
 				"idlocalizacao": 2,
-				"localizacao": "TESTE 2"
+				"localizacao": "LOCAL 2"
 			}
 		],
 		"conjuntos": [
 			{
 				"idconjunto": 1,
-				"conjunto": "TESTE 1"
+				"conjunto": "CONJUNTO 1"
 			},
 			{
 				"idconjunto": 2,
-				"conjunto": "TESTE 2"
+				"conjunto": "CONJUNTO 2"
 			}
 		],
 		"responsaveis": [
 			{
 				"idresponsavel": 1,
-				"responsavel": "TESTE 1"
+				"responsavel": "RESP 1"
 			},
 			{
 				"idresponsavel": 2,
-				"responsavel": "TESTE 2"
+				"responsavel": "RESP 2"
 			}
 		],
 		"items": [
