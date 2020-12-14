@@ -1,11 +1,16 @@
 class Responsavel {
   int idresponsavel;
   String responsavel;
-  bool incluir;
 
-  Responsavel(int idresponsavel, String responsavel, bool incluir) {
-    this.idresponsavel = idresponsavel;
-    this.responsavel = responsavel;
-    this.incluir = incluir;
+  Responsavel({this.idresponsavel, this.responsavel});
+
+  Map toJson() =>
+      {'idresponsavel': this.idresponsavel, 'responsavel': this.responsavel};
+
+  factory Responsavel.fromJson(Map<String, dynamic> parsedJson) {
+    return Responsavel(
+      idresponsavel: parsedJson['idresponsavel'] as int,
+      responsavel: parsedJson['responsavel'] as String,
+    );
   }
 }

@@ -1,11 +1,15 @@
 class Conjunto {
   int idconjunto;
   String conjunto;
-  bool incluir;
 
-  Conjunto(int idconjunto, String conjunto, bool incluir) {
-    this.idconjunto = idconjunto;
-    this.conjunto = conjunto;
-    this.incluir = incluir;
+  Conjunto({this.idconjunto, this.conjunto});
+
+  Map toJson() => {'idconjunto': this.idconjunto, 'conjunto': this.conjunto};
+
+  factory Conjunto.fromJson(Map<String, dynamic> parsedJson) {
+    return Conjunto(
+      idconjunto: parsedJson['idconjunto'] as int,
+      conjunto: parsedJson['conjunto'] as String,
+    );
   }
 }

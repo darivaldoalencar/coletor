@@ -56,40 +56,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void carregaListaIndividual() async {
     await getInventario();
 
-    for (InventarioItens item in inventariado[0].items) {
-      Responsavel respIncluir =
-          new Responsavel(item.idresponsavel, item.responsavel, true);
-
-      Conjunto conjIncluir = new Conjunto(item.idconjunto, item.conjunto, true);
-
-      Localizacao locIncluir =
-          new Localizacao(item.idlocalizacao, item.localizacao, true);
-
-      Grupo grupoIncluir = new Grupo(item.idgrupo, item.grupo, true);
-
-      if (listaResponsavel.length > 0)
-        respIncluir.incluir = listaResponsavel
-            .where((e) => e.idresponsavel == item.idresponsavel)
-            .isEmpty;
-
-      if (listaConjunto.length > 0)
-        conjIncluir.incluir =
-            listaConjunto.where((e) => e.idconjunto == item.idconjunto).isEmpty;
-
-      if (listaLocalizacao.length > 0)
-        locIncluir.incluir = listaLocalizacao
-            .where((e) => e.idlocalizacao == item.idlocalizacao)
-            .isEmpty;
-
-      if (listaGrupo.length > 0)
-        grupoIncluir.incluir =
-            listaGrupo.where((e) => e.idgrupo == item.idgrupo).isEmpty;
-
-      if (respIncluir.incluir) listaResponsavel.add(respIncluir);
-      if (conjIncluir.incluir) listaConjunto.add(conjIncluir);
-      if (locIncluir.incluir) listaLocalizacao.add(locIncluir);
-      if (grupoIncluir.incluir) listaGrupo.add(grupoIncluir);
-    }
+    listaResponsavel = inventariado[0].responsaveis;
+    listaConjunto = inventariado[0].conjuntos;
+    listaLocalizacao = inventariado[0].localizacoes;
+    listaGrupo = inventariado[0].grupos;
   }
 
   AutoCompleteTextField searchTextFieldGrupo;
@@ -303,7 +273,9 @@ class _MyHomePageState extends State<MyHomePage> {
             break;
           }
         }
+
         file.writeAsStringSync(json.encode(_json));
+        carregaListaIndividual();
       }
       return true;
     } catch (e) {

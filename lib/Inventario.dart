@@ -1,19 +1,57 @@
+import 'package:flutter_app/Conjunto.dart';
+import 'package:flutter_app/Grupo.dart';
+import 'package:flutter_app/Localizacao.dart';
+import 'package:flutter_app/Responsavel.dart';
+
 class Inventario {
   int idinventariobens;
   List<InventarioItens> items;
+  List<Grupo> grupos;
+  List<Conjunto> conjuntos;
+  List<Localizacao> localizacoes;
+  List<Responsavel> responsaveis;
 
-  Inventario({this.idinventariobens, this.items});
+  Inventario(
+      {this.idinventariobens,
+      this.items,
+      this.grupos,
+      this.conjuntos,
+      this.localizacoes,
+      this.responsaveis});
 
-  Map toJson() =>
-      {'idinventariobens': this.idinventariobens, 'items': this.items};
+  Map toJson() => {
+        'idinventariobens': this.idinventariobens,
+        'items': this.items,
+        'grupos': this.grupos,
+        'conjuntos': this.conjuntos,
+        'localizacoes': this.localizacoes,
+        'responsaveis': this.responsaveis
+      };
 
   factory Inventario.fromJson(Map<String, dynamic> parsedJson) {
     var lista = parsedJson['items'] as List;
+    var listaGrupos = parsedJson['grupos'] as List;
+    var listaConjuntos = parsedJson['conjuntos'] as List;
+    var listaLocalizacoes = parsedJson['localizacoes'] as List;
+    var listaResponsaveis = parsedJson['responsaveis'] as List;
+
     List<InventarioItens> items =
         lista.map((p) => InventarioItens.fromJson(p)).toList();
+    List<Grupo> grupos = listaGrupos.map((p) => Grupo.fromJson(p)).toList();
+    List<Conjunto> conjuntos =
+        listaConjuntos.map((p) => Conjunto.fromJson(p)).toList();
+    List<Localizacao> localizacoes =
+        listaLocalizacoes.map((p) => Localizacao.fromJson(p)).toList();
+    List<Responsavel> responsaveis =
+        listaResponsaveis.map((p) => Responsavel.fromJson(p)).toList();
 
     return Inventario(
-        idinventariobens: parsedJson['idinventariobens'] as int, items: items);
+        idinventariobens: parsedJson['idinventariobens'] as int,
+        items: items,
+        grupos: grupos,
+        conjuntos: conjuntos,
+        localizacoes: localizacoes,
+        responsaveis: responsaveis);
   }
 }
 
