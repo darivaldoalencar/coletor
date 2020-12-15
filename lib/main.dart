@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Inventário'),
+      home: MyHomePage(title: 'Inventário [1.1.1.1]'),
     );
   }
 }
@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _jsonString;
   File file;
 
-  static List<Inventario> inventariado = new List<Inventario>();
+  static Inventario inventariado = new Inventario();
   static List<Responsavel> listaResponsavel = new List<Responsavel>();
   static List<Conjunto> listaConjunto = new List<Conjunto>();
   static List<Localizacao> listaLocalizacao = new List<Localizacao>();
@@ -56,10 +56,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void carregaListaIndividual() async {
     await getInventario();
 
-    listaResponsavel = inventariado[0].responsaveis;
-    listaConjunto = inventariado[0].conjuntos;
-    listaLocalizacao = inventariado[0].localizacoes;
-    listaGrupo = inventariado[0].grupos;
+    listaResponsavel = inventariado.responsaveis;
+    listaConjunto = inventariado.conjuntos;
+    listaLocalizacao = inventariado.localizacoes;
+    listaGrupo = inventariado.grupos;
   }
 
   AutoCompleteTextField searchTextFieldGrupo;
@@ -182,9 +182,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  static List<Inventario> loadInventario(String jsonString) {
-    final parsed = json.decode(jsonString).cast<Map<String, dynamic>>();
-    return parsed.map<Inventario>((json) => Inventario.fromJson(json)).toList();
+  static Inventario loadInventario(String jsonString) {
+    Map<String, dynamic> parsed = jsonDecode(jsonString);
+    return Inventario.fromJson(parsed);
   }
 
   @override
@@ -207,7 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       try {
         InventarioItens di = new InventarioItens();
-        di = inventariado.first.items.firstWhere(
+        di = inventariado.items.firstWhere(
             (i) => i.placa.toString().startsWith(this.txtPlaca.text));
 
         if (di != null) {
@@ -240,7 +240,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool writeJson() {
     try {
-      InventarioItens di = inventariado.first.items
+      InventarioItens di = inventariado.items
           .firstWhere((i) => i.placa.toString().contains(this.txtPlaca.text));
 
       if (di.placa > 0) {
@@ -265,11 +265,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
         String strInventario = jsonEncode(di);
         Map<String, dynamic> _newJson = jsonDecode(strInventario);
-        List<dynamic> _json = json.decode(_jsonString);
+        Map<String, dynamic> _json = json.decode(_jsonString);
 
-        for (int i = 0; i <= _json[0]["items"].length - 1; i++) {
-          if (_json[0]["items"][i]["placa"] == di.placa) {
-            _json[0]["items"][i] = _newJson;
+        for (int i = 0; i <= _json["items"].length - 1; i++) {
+          if (_json["items"][i]["placa"] == di.placa) {
+            _json["items"][i] = _newJson;
             break;
           }
         }
