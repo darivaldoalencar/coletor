@@ -12,6 +12,7 @@ import 'Inventario.dart';
 import 'package:ext_storage/ext_storage.dart';
 import 'Linhas.dart';
 import 'Responsavel.dart';
+import 'SituacaoBem.dart';
 
 void main() => runApp(MyApp());
 
@@ -42,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String msgErro = "";
   bool loading = true;
 
-  var comboSituacao = ['Bom', 'Regular', 'Ruim', 'Inservível', 'Obsoleto'];
+  //var comboSituacao = ['Bom', 'Regular', 'Ruim', 'Inservível', 'Obsoleto'];
 
   String _jsonString;
   File file;
@@ -52,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static List<Conjunto> listaConjunto = new List<Conjunto>();
   static List<Localizacao> listaLocalizacao = new List<Localizacao>();
   static List<Grupo> listaGrupo = new List<Grupo>();
+  static List<SituacaoBem> listaSitBem = new List<SituacaoBem>();
 
   void carregaListaIndividual() async {
     await getInventario();
@@ -60,6 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
     listaConjunto = inventariado.conjuntos;
     listaLocalizacao = inventariado.localizacoes;
     listaGrupo = inventariado.grupos;
+    setState(() {
+      listaSitBem = inventariado.situacoes;
+    });
   }
 
   AutoCompleteTextField searchTextFieldGrupo;
@@ -414,17 +419,23 @@ class _MyHomePageState extends State<MyHomePage> {
         DropdownButtonFormField<String>(
           icon: Icon(Icons.arrow_downward),
           decoration: InputDecoration(labelText: "Situação"),
-          value: comboSituacao[this.iibFlgsitfisica],
+          //value: this.iibFlgsitfisica == 0? null: this.iibFlgsitfisica.toString(),
+          value: this.iibFlgsitfisica == 0
+              ? null
+              : listaSitBem
+                  .firstWhere((e) => e.idsituacao == this.iibFlgsitfisica)
+                  .situacao,
           style: TextStyle(color: Colors.black, fontSize: 16.0),
-          items: comboSituacao.map((String dropDownStringItem) {
+          items: listaSitBem.map((SituacaoBem dropDownStringItem) {
             return DropdownMenuItem<String>(
-              value: dropDownStringItem,
-              child: Text(dropDownStringItem),
+              value: dropDownStringItem.situacao,
+              child: Text(dropDownStringItem.situacao),
             );
           }).toList(),
           onChanged: (op) {
             setState(() {
-              this.iibFlgsitfisica = comboSituacao.indexOf(op);
+              this.iibFlgsitfisica =
+                  listaSitBem.firstWhere((s) => s.situacao == op).idsituacao;
             });
           },
         ),

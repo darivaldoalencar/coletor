@@ -2,6 +2,7 @@ import 'package:flutter_app/Conjunto.dart';
 import 'package:flutter_app/Grupo.dart';
 import 'package:flutter_app/Localizacao.dart';
 import 'package:flutter_app/Responsavel.dart';
+import 'package:flutter_app/SituacaoBem.dart';
 
 class Inventario {
   int idinventariobens;
@@ -10,6 +11,7 @@ class Inventario {
   List<Conjunto> conjuntos;
   List<Localizacao> localizacoes;
   List<Responsavel> responsaveis;
+  List<SituacaoBem> situacoes;
 
   Inventario(
       {this.idinventariobens,
@@ -17,7 +19,8 @@ class Inventario {
       this.grupos,
       this.conjuntos,
       this.localizacoes,
-      this.responsaveis});
+      this.responsaveis,
+      this.situacoes});
 
   Map toJson() => {
         'idinventariobens': this.idinventariobens,
@@ -25,7 +28,8 @@ class Inventario {
         'grupos': this.grupos,
         'conjuntos': this.conjuntos,
         'localizacoes': this.localizacoes,
-        'responsaveis': this.responsaveis
+        'responsaveis': this.responsaveis,
+        'situacoes': this.situacoes
       };
 
   factory Inventario.fromJson(Map<String, dynamic> parsedJson) {
@@ -34,6 +38,7 @@ class Inventario {
     var listaConjuntos = parsedJson['conjuntos'] as List;
     var listaLocalizacoes = parsedJson['localizacoes'] as List;
     var listaResponsaveis = parsedJson['responsaveis'] as List;
+    var listaSituacoes = parsedJson['situacoes'] as List;
 
     List<InventarioItens> items =
         lista.map((p) => InventarioItens.fromJson(p)).toList();
@@ -44,6 +49,8 @@ class Inventario {
         listaLocalizacoes.map((p) => Localizacao.fromJson(p)).toList();
     List<Responsavel> responsaveis =
         listaResponsaveis.map((p) => Responsavel.fromJson(p)).toList();
+    List<SituacaoBem> situacoes =
+        listaSituacoes.map((p) => SituacaoBem.fromJson(p)).toList();
 
     return Inventario(
         idinventariobens: parsedJson['idinventariobens'] as int,
@@ -51,7 +58,8 @@ class Inventario {
         grupos: grupos,
         conjuntos: conjuntos,
         localizacoes: localizacoes,
-        responsaveis: responsaveis);
+        responsaveis: responsaveis,
+        situacoes: situacoes);
   }
 }
 
