@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Inventário [1.1.1.1]'),
+      home: MyHomePage(title: 'Inventário [1.1.1.3]'),
     );
   }
 }
@@ -116,27 +116,34 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   bool manipularEstoque() {
-    if (this.txtPlaca.text.length <= 0) {
-      this.msgErro = "Informe a placa.";
-      return false;
-    } else if (this.txtConjunto.text.length <= 0) {
-      this.msgErro = "Informe o conjunto.";
-      return false;
-    } else if (this.txtLocalizacao.text.length <= 0) {
-      this.msgErro = "Informe a localização.";
-      return false;
-    } else if (this.txtGrupo.text.length <= 0) {
-      this.msgErro = "Informe o grupo.";
-      return false;
-    } else if (this.txtResponsavel.text.length <= 0) {
-      this.msgErro = "Informe o responsável.";
-      return false;
-    } else if (this.iibFlgsitfisica < 0) {
-      this.msgErro = "Informe a situação.";
-      return false;
-    } else {
-      if (writeJson()) this.msgErro = "Item coletado.";
-      return true;
+    try {
+      if (this.txtPlaca.text.length <= 0) {
+        this.msgErro = "Informe a placa.";
+        return false;
+      } else if (this.txtConjunto.text.length <= 0) {
+        this.msgErro = "Informe o conjunto.";
+        return false;
+      } else if (this.txtLocalizacao.text.length <= 0) {
+        this.msgErro = "Informe a localização.";
+        return false;
+      } else if (this.txtGrupo.text.length <= 0) {
+        this.msgErro = "Informe o grupo.";
+        return false;
+      } else if (this.txtResponsavel.text.length <= 0) {
+        this.msgErro = "Informe o responsável.";
+        return false;
+      } else if (this.iibFlgsitfisica < 0) {
+        this.msgErro = "Informe a situação.";
+        return false;
+      } else if (writeJson()) {
+        this.msgErro = "Item coletado.";
+        return true;
+      } else {
+        this.msgErro = "Item não coletado.";
+        return false;
+      }
+    } catch (e) {
+      this.msgErro = "Ocorreu um errro: $e";
     }
   }
 
@@ -211,9 +218,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void buscaPatrimonio() {
     setState(() {
       try {
+        int num = int.tryParse(this.txtPlaca.text) ?? 0;
+
         InventarioItens di = new InventarioItens();
-        di = inventariado.items.firstWhere(
-            (i) => i.placa.toString().startsWith(this.txtPlaca.text));
+        di = inventariado.items
+            .firstWhere((i) => i.placa.toString().startsWith(num.toString()));
 
         if (di != null) {
           this.idGrupo = di.idgrupo;
@@ -245,8 +254,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool writeJson() {
     try {
+      int num = int.tryParse(this.txtPlaca.text) ?? 0;
+
       InventarioItens di = inventariado.items
-          .firstWhere((i) => i.placa.toString().contains(this.txtPlaca.text));
+          .firstWhere((i) => i.placa.toString().contains(num.toString()));
 
       if (di.placa > 0) {
         di.idconjunto = this.idConjunto;
@@ -447,6 +458,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (_formkey.currentState.validate()) {
                   bool manipulou = manipularEstoque();
                   mostraMensagem(manipulou ? "Informação" : "Erro");
+                  limparForm();
                 }
               },
               child: Text('Salvar'),
